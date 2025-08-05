@@ -6,6 +6,15 @@ function App() {
   const [sourceToken, setSourceToken] = useState("ETH")
   const [targetToken, setTargetToken] = useState("BTC");
   const tokens = ["ETH", "BTC", "USDC", "SOL"];
+  const data: Record<string, number> = {
+    ETH: 2000,
+    BTC: 40000,
+    USDC: 1,
+    SOL: 100,
+  };
+  const usd = Number(usdAmount);
+  const sourceAmount = usd / data[sourceToken];
+  const targetAmount = sourceAmount * (data[sourceToken] / data[targetToken]);
 
   const renderTokenOptions = (excludedToken: string) => {
     return (
@@ -55,7 +64,7 @@ function App() {
       <div style={{ padding: "1rem 0" }}>
         <strong>Conversion:</strong>{" "}
         {usdAmount
-          ? `${usdAmount} USD → 0.00 ${sourceToken} → 0.00 ${targetToken}`
+          ? `${usdAmount} USD → ${sourceAmount.toFixed(6)} ${sourceToken} → ${targetAmount.toFixed(6)} ${targetToken}`
           : "--"}
       </div>
     </div>
