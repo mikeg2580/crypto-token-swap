@@ -8,6 +8,8 @@ function App() {
   const [targetToken, setTargetToken] = useState("USDT");
   const [rates, setRates] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
+  const [inputError, setInputError] = useState(false);
+  const [fetchError, setFetchError] = useState(false);
 
   const apiKey = "Z9SZaOwpmE40KX61mUKWm5hrpGh7WHVkaTvQJpQk";
 
@@ -51,6 +53,7 @@ function App() {
         setRates(newRates);
       } catch (err) {
         console.error("Error fetching token data:", err);
+        setFetchError(true);
       } finally {
         setLoading(false);
       }
@@ -68,8 +71,6 @@ function App() {
   const sourceAmount = usd && sourcePrice ? usd / sourcePrice : 0;
   const targetAmount = sourcePrice && targetPrice ? sourceAmount * (sourcePrice / targetPrice) : 0;
 
-
-
   const renderTokenOptions = (excludedToken: string) => {
     return (
       <>
@@ -83,10 +84,16 @@ function App() {
   }
 
   return (
-    <>
-      {loading ? (<div>Loading token prices...</div>) : 
+    <div style={{ fontFamily: "sans-serif", padding: "2rem" }}>
+      {loading && <div>Loading token prices...</div>}
+      {fetchError && !loading && (
+        <div style={{ color: "red"}}>
+          Failed to fetch token prices. Please refresh or try again later.
+        </div>
+      )}
+      {!loading && !fetchError &&
         (
-          <div style={{ fontFamily: "sans-serif", padding: "2rem" }}>
+          <>
             <h1>Token Converter</h1>
             <div style={{ padding: "1rem 0" }}>
               <label htmlFor="usd-input">Enter Amount in USD: </label>
@@ -100,12 +107,19 @@ function App() {
                   const num = e.target.valueAsNumber
                   if (value === "") {
                     setUsdAmount(value)
-                  } else if (num >= 0) {
-                    setUsdAmount(num.toString())
+                  } else if (num < 0) {
+                    setInputError(true)
+                    setUsdAmount("");
+                  } else {
+                    setUsdAmount(num.toString());
+                    setInputError(false);
                   }
                 }}
               />
             </div>
+            {inputError && (
+              <div style={{ color: "red", fontSize: "0.9rem" }}>USD amount cannot be negative.</div>
+            )}
             <div style={{ padding: "1rem 0" }}>
               <label htmlFor="source-token">Select Source Token: </label>
               <select id="source-token" value={sourceToken} onChange={(e) => setSourceToken(e.target.value)}>
@@ -120,14 +134,14 @@ function App() {
             </div>
             <div style={{ padding: "1rem 0" }}>
               <strong>Conversion:</strong>{" "}
-              {usdAmount
+              {usdAmount && !inputError
                 ? `${usdAmount} USD → ${sourceAmount.toFixed(6)} ${sourceToken} → ${targetAmount.toFixed(6)} ${targetToken}`
                 : "--"}
             </div>
-          </div>
+          </>
         )
       }
-    </>
+    </div>
   )
 }
 
