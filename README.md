@@ -33,17 +33,13 @@ A simple React + TypeScript token converter that converts USD to a source token 
    - Prices are fetched **once on component mount** (no auto-refresh).
 
 3. **Error Handling**  
-   - If fetching fails, error is logged to the console.  
+   - If fetching fails, error fetch error message appears and error is logged to the console.
+   - If user enters negative USD value, error message appears
 
 4. **UI Decisions**  
    - Simple inline styles for clarity, no external styling library.  
    - Results limited to 6 decimal places for readability.  
    - UX blocks negative USD input; empty input clears the conversion result.  
-
-5. **Performance & Code Quality**  
-   - `Promise.all` is used to fetch all token prices in parallel.  
-   - State is guarded to avoid `NaN` values before rates load.  
-   - Project is fully typed with TypeScript.
 
 ---
 
@@ -55,12 +51,10 @@ A simple React + TypeScript token converter that converts USD to a source token 
 
 ---
 
-## Future Improvements
+## Potential Improvements
 
 - Auto‑refresh token prices at intervals.  
-- Display user‑friendly error messages in the UI.  
-- Improve input formatting for large numbers.  
-- Optional: Deploy to Vercel or Netlify for a live demo.
+- Add retry button when fetch fails
 
 ---
 
@@ -87,3 +81,8 @@ A simple React + TypeScript token converter that converts USD to a source token 
 
 4. **Open in Web Browser**
    - By default, Vite will start on: [http://localhost:5173](http://localhost:5173)
+
+---
+
+## Live Demo
+[View Deployed App](https://crypto-token-swap.vercel.app/)
